@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, View, ScrollView, Text } from "react-native";
 import { Icon, Input, Button } from "react-native-elements";
 import { map, size, } from "lodash";
@@ -11,7 +11,10 @@ import UploadImage from "../UploadImage";
 import ShowImage from "../ShowImage";
 import { AuthContext } from "../../Context/AuthProvider";
 import moment from 'moment';
+import Modal from "../Modal";
 import DatePicker from "../DatePicker";
+import * as Location from "expo-location";
+import MapView from "react-native-maps";
 const db = firebase.firestore(firebaseApp);
 
 export default function PostForm(props) {
@@ -21,15 +24,19 @@ export default function PostForm(props) {
     const [postHeader, setPostHeader] = useState("");
     const [postDescription, setPostDescription] = useState("");
     const [date, setDate] = useState("");
+    const [address, setAddress] = useState("");
+    const [localization, setLocalization] = useState(null);
+    const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [imageSelected, setImageSelected] = useState([]);
-
 
     const addPost = () => {
 
-        if (!postHeader || !postDescription || !date) {
+        if (!postHeader || !postDescription || !date || !address) {
             toastRef.current.show("Todos los campos del formulario son obligatorios");
         } else if (size(imageSelected) === 0) {
             toastRef.current.show("Debes subir al menos una foto del hecho");
+        } else if (!localization) {
+            toastRef.current.show("Tienes que agregar un punto de localización");
         } else {
             setIsLoading(true);
             uploadImageStorage().then((response) => {
@@ -39,6 +46,8 @@ export default function PostForm(props) {
                         description: postDescription,
                         images: response,
                         date: date,
+                        address: address,
+                        location: localization,
                         createAt: currentDate,
                         createBy: user.uid,
                     })
@@ -85,6 +94,9 @@ export default function PostForm(props) {
                     setPostHeader={setPostHeader}
                     setPostDescription={setPostDescription}
                     setDate={setDate}
+                    setAddress={setAddress}
+                    localization={localization}
+                    setIsVisibleMap={setIsVisibleMap}
                 />
                 <UploadImage
                     toastRef={toastRef}
@@ -97,7 +109,12 @@ export default function PostForm(props) {
                     containerStyle={styles.btnContainer}
                     buttonStyle={styles.btnStyle}
                     titleStyle={styles.btnTitleStyle}
-
+                />
+                <Map
+                    isVisibleMap={isVisibleMap}
+                    setIsVisibleMap={setIsVisibleMap}
+                    toastRef={toastRef}
+                    setLocalization={setLocalization}
                 />
 
             </View>
@@ -110,7 +127,10 @@ function FormAdd(props) {
     const {
         setPostHeader,
         setPostDescription,
-        setDate
+        setDate,
+        setAddress,
+        localization,
+        setIsVisibleMap,
     } = props;
 
 
@@ -149,6 +169,21 @@ function FormAdd(props) {
                     />}
                 onChange={(e) => setPostDescription(e.nativeEvent.text)}
             />
+            <Input
+                placeholder="Ubicación"
+                containerStyle={styles.containerInput}
+                inputContainerStyle={styles.containerInputStyle}
+                inputStyle={styles.inputStyle}
+                leftIcon={
+                    <Icon
+                        type="font-awesome"
+                        name="map-marker"
+                        iconStyle={{ color: localization ? "red" : "#c2c2c2", paddingRight: 16 }}
+                        size={20}
+                        onPress={() => setIsVisibleMap(true)}
+                    />}
+                onChange={(e) => setAddress(e.nativeEvent.text)}
+            />
             <DatePicker
                 title="Fecha"
                 setDateTime={setDate}
@@ -157,6 +192,75 @@ function FormAdd(props) {
 
         </View >
     );
+}
+
+
+function Map(props) {
+    const { isVisibleMap, setIsVisibleMap, toastRef, setLocalization } = props;
+    const [location, setLocation] = useState(null);
+    useEffect(() => {
+        (async () => {
+
+            let { status } = await Location.requestForegroundPermissionsAsync()
+
+            if (status !== 'granted') {
+                toastRef.current.show(
+                    "Primero debes aceptar los permisos de localización", 3000
+                );
+            } else {
+                const loc = await Location.getCurrentPositionAsync({});
+                setLocation({
+                    latitude: loc.coords.latitude,
+                    longitude: loc.coords.longitude,
+                    latitudeDelta: 0.001,
+                    longitudeDelta: 0.001
+                })
+            }
+        })();
+    }, [])
+
+    const confirmLocation = () => {
+        setLocalization(location);
+        toastRef.current.show("Localización guardada correctamente")
+        setIsVisibleMap(false);
+    }
+
+    return (
+        <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
+            <View>
+                {location && (
+                    <MapView
+                        style={styles.mapStyle}
+                        initialRegion={location}
+                        showsUserLocation={true}
+                        onRegionChange={(region) => setLocation(region)}
+                    >
+                        <MapView.Marker
+                            coordinate={{
+                                latitude: location.latitude,
+                                longitude: location.longitude
+                            }}
+                        />
+                    </MapView>
+                )}
+                <View style={styles.viewMapBtn}>
+                    <Button
+                        title="Guardar Ubicación"
+                        containerStyle={styles.viewMapBtnContainerSave}
+                        buttonStyle={styles.viewMapSave}
+                        onPress={confirmLocation}
+                    />
+                    <Button
+                        title="Cancelar Ubicación"
+                        containerStyle={styles.viewMapCancelContainer}
+                        buttonStyle={styles.viewMapCancel}
+                        onPress={() => { setIsVisibleMap(false) }}
+                    />
+                </View>
+            </View>
+        </Modal>
+    )
+
 }
 
 const styles = StyleSheet.create({
@@ -226,5 +330,29 @@ const styles = StyleSheet.create({
     btnTitleStyle: {
         fontSize: 20,
         color: "#fff",
-    }
+    },
+    mapStyle: {
+        width: "100%",
+        height: 550,
+    },
+    viewMapBtn: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 10,
+    },
+    viewMapCancelContainer: {
+        paddingLeft: 5,
+    },
+    viewMapCancel: {
+        backgroundColor: "red",
+        borderRadius: 10,
+    },
+    viewMapBtnContainerSave: {
+        paddingRight: 5,
+
+    },
+    viewMapSave: {
+        backgroundColor: "blue",
+        borderRadius: 10,
+    },
 });

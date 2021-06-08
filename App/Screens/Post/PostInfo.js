@@ -12,13 +12,15 @@ import { StatusBar } from "expo-status-bar";
 import GeneralText from "../../Components/GeneralText";
 import Title from "../../Components/Title";
 import CarouselImages from "../../Components/Carousel";
+import Map from "../../Components/Map";
+import ListComments from "../../Components/Comments/ListComments";
 const screenWidth = Dimensions.get("window").width;
 
 export default function PostInfo(props) {
     const toastRef = useRef();
     const { navigation, route } = props;
     const { id } = route.params;
-    const [post, setPost] = useState({});
+    const [post, setPost] = useState(null);
     const [photoOwner, setPhotoOwner] = useState({});
 
     useEffect(() => {
@@ -74,36 +76,60 @@ export default function PostInfo(props) {
     return (
         //Visualization of screen
         <ScrollView vertical style={styles.viewBody}>
-            <StatusBar
-                animated={true}
-                backgroundColor="#fff"
-                style={"auto"}
-                hidden={false} />
-            {post.images &&
-                < CarouselImages
-                    arrayImages={post.images}
-                    height={300}
-                    width={screenWidth}
-                />}
-            <GeneralText text={"Publicado el:\n" + post.createAt} />
-            <Title text={post.postHeader} />
+            { post && (
+                <>
+                    <StatusBar
+                        animated={true}
+                        backgroundColor="#fff"
+                        style={"auto"}
+                        hidden={false} />
 
-            <GeneralText text={"" + post.date} />
-            <GeneralText text={post.description} />
+                    < CarouselImages
+                        arrayImages={post.images}
+                        height={300}
+                        width={screenWidth}
+                    />
+                    <GeneralText text={"Publicado el:\n" + post.createAt} />
+                    <Title text={post.postHeader} />
 
+                    <GeneralText text={"" + post.date} />
+                    <GeneralText text={post.description} />
 
-            <Icon
-                reverse
-                type="font-awesome"
-                name="trash-o"
-                color="#192637"
-                containerStyle={styles.btnContainer}
-                onPress={deleteData}
-            />
-            <Toast ref={toastRef} position="center" opacity={0.9} />
+                    <PostLocation
+                        location={post.location}
+                        address={post.address}
+                    />
+                    <ListComments
+                        navigation={navigation}
+                        idPost={post.id}
+                    />
+
+                    <Icon
+                        reverse
+                        type="font-awesome"
+                        name="trash-o"
+                        color="#192637"
+                        containerStyle={styles.btnContainer}
+                        onPress={deleteData}
+                    />
+                    <Toast ref={toastRef} position="center" opacity={0.9} />
+                </>
+            )}
         </ScrollView>
     );
 
+}
+
+function PostLocation(props) {
+    const { location, name, address } = props;
+
+    return (
+        <View style={styles.viewPostInfo}>
+            <GeneralText text="Información General" color="#3b3835" size={14} />
+            <Map location={location} name={name} height={200} />
+
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -129,5 +155,9 @@ const styles = StyleSheet.create({
     viewDataStyle: {
         marginTop: 32,
         alignSelf: "center"
-    }
+    },
+    viewPostInfo: {
+        margin: 15,
+        marginTop: 25,
+    },
 });
