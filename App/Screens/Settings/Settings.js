@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import Toast from "react-native-easy-toast";
-import * as firebase from "firebase";
 import InfoUser from "../../Components/Settings/InfoUser";
 import Loading from "../../Components/Loading";
 import AccountOptions from "../../Components/Settings/SettingsOptions";
@@ -15,17 +14,14 @@ import { StatusBar } from "expo-status-bar";
 export default function Settings(props) {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { logout } = useContext(AuthContext);
+    const { logout, user } = useContext(AuthContext);
     const [loadingText, setLoadingText] = useState("");
     const [reloadUserInfo, setReloadUserInfo] = useState(false);
     const toastRef = useRef();
 
     //Función autoejecutable para recargar la información
     useEffect(() => {
-        (async () => {
-            const user = await firebase.auth().currentUser;
-            setUserInfo(user);
-        })();
+        setUserInfo(user);
         setReloadUserInfo(false);
     }, [reloadUserInfo]);
 

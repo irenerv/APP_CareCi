@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native'
 import { Button, Input } from "react-native-elements";
-import * as firebase from "firebase";
 import { validateEmail } from "../../Utils/validations";
 import { reauthenticate } from "../../Utils/api";
 
@@ -37,15 +36,23 @@ export default function ChangeEmailForm(props) {
             setIsLoading(true);
             reauthenticate(formData.password)
                 .then(() => {
-                    firebase
-                        .auth()
-                        .currentUser.updateEmail(formData.email)
+                    fetch(new Request("http://IP_DISPOSITIVO:3000/api/putEmail", {
+                        method: "PUT",
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: formData.email
+                        })
+                    }))
                         .then(() => {
                             setIsLoading(false);
                             setReloadUserInfo(true);
                             toastRef.current.show("Email actualizado correctamente");
                             setShowModal(false);
-                        }).catch(() => {
+                        })
+                        .catch((err) => {
                             setErrors({ email: "Error al actualizar el email." });
                             setIsLoading(false);
                         });

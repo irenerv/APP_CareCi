@@ -3,11 +3,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, View, ScrollView, Text } from "react-native";
 import { Icon, Input, Button } from "react-native-elements";
 import { map, size, } from "lodash";
-import uuid from "random-uuid-v4";
-import { firebaseApp } from "../../Utils/firebase";
-import firebase from "firebase/app";
-import "firebase/storage";
-import "firebase/firestore";
 import UploadImage from "../UploadImage";
 import ShowImage from "../ShowImage";
 import { AuthContext } from "../../Context/AuthProvider";
@@ -16,8 +11,6 @@ import Modal from "../Modal";
 import DatePicker from "../DatePicker";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
-import axios from "axios";
-//const db = firebase.firestore(firebaseApp);
 
 //Formulario de posts
 export default function PostForm(props) {
@@ -44,34 +37,10 @@ export default function PostForm(props) {
             toastRef.current.show("Tienes que agregar un punto de localización");
         } else {
             setIsLoading(true);
-            //Realizado con firebase directamente
-            // uploadImageStorage().then((response) => {
-            //     db.collection("post")
-            //         .add({
-            //             postHeader: postHeader,
-            //             description: postDescription,
-            //             images: response,
-            //             date: date,
-            //             address: address,
-            //             location: localization,
-            //             createAt: currentDate,
-            //             createBy: user.uid,
-            //         })
-            //         .then(() => {
-            //             setIsLoading(false);
-            //             toastRef.current.show("¡Listo!");
-            //             navigation.navigate("post");
-            //         }).catch(() => {
-            //             setIsLoading(false);
-            //             toastRef.current.show("Error al publicar, inténtalo más tarde");
-            //         })
-            // });
-            //}
-
             //Realizado mediante la API
             uploadImageStorage().then((response) => {
                 //console.log(response)
-                fetch(new Request("http://192.168.100.3:3000/api/post", {
+                fetch(new Request("http://IP_DISPOSITIVO:3000/api/post", {
                     method: "POST",
                     headers: {
                         Accept: 'application/json',
@@ -89,7 +58,6 @@ export default function PostForm(props) {
                     })
                 }))
                     .then((response) => {
-                        //console.log(JSON.stringify(response));
                         setIsLoading(false);
                         toastRef.current.show("¡Listo!");
                         navigation.navigate("post");
@@ -102,7 +70,7 @@ export default function PostForm(props) {
         }
     };
 
-    //Realizado con firebase directamente
+    //Realizando petición a la API
     const uploadImageStorage = async () => {
         const imageBlob = [];
 
@@ -110,88 +78,27 @@ export default function PostForm(props) {
             map(imageSelected, async (image) => {
                 const response = await fetch(image);
                 const blob = await response.blob();
-                console.log("b:" + JSON.stringify(blob))
-                const ref = firebase.storage().ref("post").child(uuid());
-                await ref.put(blob).then(async (result) => {
-                    await firebase
-                        .storage()
-                        .ref(`post/${result.metadata.name}`)
-                        .getDownloadURL()
-                        .then(photoUrl => {
-                            imageBlob.push(photoUrl);
-                        });
-                });
+                fetch(new Request("http://IP_DISPOSITIVO:3000/api/postImage", {
+                    method: "POST",
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        blob: blob
+                    })
+                }))
+                    .then(response => {
+                        const images = JSON.stringify(response);
+                        imageBlob.push(images.blob);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
             })
         );
-
         return imageBlob;
-
     };
-
-    //Realizado con firebase directamente
-    // const uploadImageStorage = async () => {
-    //     const imageBlob = [];
-
-    // //     await Promise.all(
-    //         map(imageSelected, async (image) => {
-    //             const response = await fetch(image);
-    //             const blob = await response.blob();
-    //             fetch(new Request("http://192.168.100.3:3000/api/postImage", {
-    //                 method: "POST",
-    //                 headers: {
-    //                     Accept: 'application/json',
-    //                     'Content-Type': 'application/json'
-    //                 },
-    //                 body: JSON.stringify({
-    //                     blob: blob
-    //                 })
-    //             }))
-    //                 .then(response => {
-    //                     // const images = JSON.stringify(response);
-    //                     // imageBlob.push(images.blob);
-
-    //                     console.log(JSON.stringify(response))
-    //                 })
-    //                 .then(response => {
-    //                     console.log(JSON.stringify(response))
-    //                 })
-    //                 .catch((err) => {
-    //                     console.log(err);
-    //                 });
-    //         })
-    //     );
-
-    //     return imageBlob;
-
-    // };
-
-    // //Realizado mediante la API
-    // const uploadImageStorage = () => {
-    //     const imageBlob = []
-    //     fetch(new Request("http://192.168.100.3:3000/api/postImage", {
-    //         method: "POST",
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //             imageSelected: imageSelected
-    //         })
-    //     }))
-    //         .then(response => {
-    //             // const images = JSON.stringify(response);
-    //             // imageBlob.push(images.blob);
-
-    //             console.log(JSON.stringify(response))
-    //         })
-    //         .then(response => {
-    //             console.log(JSON.stringify(response))
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    //     return imageBlob;
-    // };
 
     return (
         //Elemeentos de página
@@ -217,7 +124,7 @@ export default function PostForm(props) {
 
                 {/* Llamada a la función de validación y almacenamiento */}
                 <Button
-                    title="Crear perfil"
+                    title="Crear post"
                     onPress={addPost}
                     containerStyle={styles.btnContainer}
                     buttonStyle={styles.btnStyle}

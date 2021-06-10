@@ -1,21 +1,18 @@
-import React, { useState, useRef, } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useState, useRef, useContext } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { Input, Icon, Button } from 'react-native-elements';
 import { StatusBar } from "expo-status-bar";
 import Title from "../../Components/Title";
 import Toast from "react-native-easy-toast";
 import Loading from "../../Components/Loading";
-import { firebaseApp } from "../../Utils/firebase";
-import firebase from "firebase/app";
-import "firebase/firestore";
+import { AuthContext } from "../../Context/AuthProvider";
 import moment from 'moment';
-
-const db = firebase.firestore(firebaseApp);
 
 export default function AddComment(props) {
     const { navigation, route } = props;
     const toastRef = useRef();
     const { idPost } = route.params;
+    const { user } = useContext(AuthContext);
     const [comment, setComment] = useState("");
     const currentDate = moment(new Date()).format('lll');
     const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +22,6 @@ export default function AddComment(props) {
             toastRef.current.show("Aún no has agregado un comentario.")
         } else {
             setIsLoading(true);
-            const user = firebase.auth().currentUser;
             const payload = {
                 idUser: user.uid,
                 avatarUser: user.photoURL,
@@ -33,18 +29,21 @@ export default function AddComment(props) {
                 comment: comment,
                 createAt: currentDate,
             }
-            db.collection("comments")
-                .add(payload)
-                .then(() => {
-                    setIsLoading(false);
+            fetch(new Request("http://IP_DISPOSITIVO:3000/api/comment", {
+                method: "POST",
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    payload: payload
                 })
-                .catch(() => {
-                    toastRef.current.show(
-                        "Error al enviar la review"
-                    )
-                    setIsLoading(false);
-                })
-            //navigation.navigate("postInfo", idPost)
+            })).then(response => {
+                //navigation.navigate("postInfo", idPost)
+            }).catch((err) => {
+                console.log(err);
+            });
+
         }
 
     }

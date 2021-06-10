@@ -3,8 +3,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import firebase from "firebase/app";
-import { firebaseApp } from "../Utils/firebase";
 import AuthNavigation from "./AuthNavigation";
 import TabNavigation from "./TabNavigation";
 import { AuthContext } from "../Context/AuthProvider";
@@ -14,17 +12,37 @@ import Loading from "../Components/Loading";
 export default function Routes() {
     const { user, setUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
-    const [initializing, setInitializing] = useState(firebaseApp);
+    const [initializing, setInitializing] = useState(null);
 
     //Peticiones de status de autenticación
     function onAuthStateChanged(user) {
         setUser(user);
-        if (initializing) setInitializing(false);
-        setLoading(false);
+        fetch(new Request("http://IP_DISPOSITIVO:3000/api/init", {
+            method: "GET",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })).then(response => {
+            setLoading(false);
+            setInitializing(response.initializing)
+        }).catch((err) => {
+            console.log(err);
+        });
     }
     useEffect(() => {
-        const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
-        return subscriber;
+        onAuthStateChanged(user);
+        fetch(new Request("http://IP_DISPOSITIVO:3000/api/state", {
+            method: "GET",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })).then(response => {
+            return response.subscriber;
+        }).catch((err) => {
+            console.log(err);
+        });
     }, [user]);
 
 

@@ -2,7 +2,6 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Avatar } from "react-native-elements";
-import * as firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from 'expo-camera';
 import GeneralText from "../GeneralText";
@@ -32,54 +31,33 @@ export default function InfoUser(props) {
             if (result.cancelled) {
                 toastRef.current.show("Has cerrado la selección de imagenes");
             } else {
-                uploadImage(result.uri).then(() => {
-                    updatePhotoUrl();
-                }).catch(() => {
+                fetch(new Request("http://IP_DISPOSITIVO:3000/api/putAvatar", {
+                    method: "PUT",
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        uri: result.uri,
+                        uid: uid
+                    })
+                })).catch((err) => {
                     toastRef.current.show("Error al actualizar el avatar.")
-                })
+                });
             }
         }
     };
-
-    //Actualización de Avatar
-    const uploadImage = async (uri) => {
-        setLoadingText("Actualizando avatar");
-        setLoading(true);
-
-        const response = await fetch(uri);
-        const blob = await response.blob();
-
-        const ref = firebase.storage().ref().child(`avatar/${uid}`);
-        return ref.put(blob);
-    };
-
-    const updatePhotoUrl = () => {
-        firebase.storage()
-            .ref(`avatar/${uid}`)
-            .getDownloadURL()
-            .then(async (response) => {
-                const update = {
-                    photoURL: response,
-                };
-                await firebase.auth().currentUser.updateProfile(update);
-                setLoading(false);
-
-            }).catch(() => {
-                toastRef.current.show("Error al actualizar el avatar");
-            });
-    }
-
 
     return (
         <View style={styles.viewUserInfo}>
             <Avatar
                 rounded
-                size="large"
+                size={150}
                 showEditButton
                 onEditPress={changeAvatar}
                 containerStyle={styles.userInfoAvatar}
                 source={
-                    photoURL ? { uri: photoURL } : require("../../../assets/img/default_avatar.jpg")}
+                    photoURL ? { uri: photoURL } : require("../../../assets/noImg/avatar_default.png")}
             />
             <View>
                 <GeneralText text={displayName ? displayName : "anónimo"} color="#fff" size={16} />
@@ -103,7 +81,6 @@ const styles = StyleSheet.create({
     },
     userInfoAvatar: {
         marginRight: 20,
-        width: 150,
-        height: 150,
+
     }
 });

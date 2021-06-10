@@ -4,7 +4,6 @@ import { Input, Icon, Button } from "react-native-elements";
 import Loading from "../Loading";
 import { validateEmail } from "../../Utils/validations";
 import { size, isEmpty } from "lodash";
-//import * as firebase from "firebase";
 import { AuthContext } from "../../Context/AuthProvider";
 
 export default function RegisterForm(props) {

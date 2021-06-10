@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Input, Button } from "react-native-elements";
 import { size } from "lodash";
-import { reauthenticate } from "../../Utils/api";
-import * as firebase from "firebase"
+
 
 //Componente para realizar cambios de contraseña
 export default function ChangePasswordForm(props) {
@@ -43,28 +42,23 @@ export default function ChangePasswordForm(props) {
             };
         } else {
             setIsLoading(true);
-            await reauthenticate(formData.password)
-                .then(async () => {
-                    await firebase
-                        .auth()
-                        .currentUser.updatePassword(formData.newPassword)
-                        .then(() => {
-                            isSetErrors = false;
-                            setIsLoading(false);
-                            setShowModal(false);
-                            firebase.auth().signOut();
-                        }).catch(() => {
-                            errorsTemp = {
-                                other: "Error al actualizar la contraseña",
-                            };
-                            setIsLoading(false);
-                        })
-                }).catch(() => {
-                    errorsTemp = {
-                        password: "La contraseña no es correcta",
-                    };
-                    setIsLoading(false);
-                });
+
+            fetch(new Request("http://IP_DISPOSITIVO:3000/api/putPassword", {
+                method: "PUT",
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    oldPassword: formData.password,
+                    newPassword: formData.newPassword
+                })
+            })).catch((err) => {
+                errorsTemp = {
+                    other: "Error al actualizar la contraseña",
+                };
+                setIsLoading(false);
+            });
         }
         isSetErrors && setErrors(errorsTemp);
     };

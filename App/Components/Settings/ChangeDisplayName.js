@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Input, Button } from "react-native-elements";
-import * as firebase from "firebase";
 
 //Componente para realizar cambios de nombre del usuario
 export default function ChangeDisplayNameForm(props) {
@@ -20,20 +19,25 @@ export default function ChangeDisplayNameForm(props) {
             setError("El nombre no puede ser igual al actual.");
         } else {
             setIsLoading(true);
-            const update = {
-                displayName: newDisplayName
-            }
-            firebase
-                .auth()
-                .currentUser.updateProfile(update)
+            fetch(new Request("http://IP_DISPOSITIVO:3000/api/putName", {
+                method: "PUT",
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    newDisplayName: newDisplayName
+                })
+            }))
                 .then(() => {
                     setIsLoading(false);
                     setReloadUserInfo(true);
                     setShowModal(false);
-                }).catch(() => {
+                })
+                .catch(() => {
                     setError("Error al actualizar el nombre");
                     setIsLoading(false);
-                })
+                });
         }
     };
 

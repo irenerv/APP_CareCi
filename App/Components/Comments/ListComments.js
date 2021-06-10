@@ -3,11 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Button, Avatar, Divider } from "react-native-elements";
 import { map } from "lodash";
-import { firebaseApp } from "../../Utils/firebase";
-import firebase from "firebase/app";
-import "firebase/firestore";
 import GeneralText from "../GeneralText";
-const db = firebase.firestore(firebaseApp);
 
 //Función para mostrar lista de comentarios de un post
 export default function ListComments(props) {
@@ -15,18 +11,26 @@ export default function ListComments(props) {
     const [comments, setComments] = useState(null);
 
     useEffect(() => {
-        db.collection("comments")
-            .where("idPost", "==", idPost)
-            .get()
-            .then((response) => {
-                const resultComments = [];
-                response.forEach(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    resultComments.push(data);
-                });
-                setComments(resultComments);
+        fetch(new Request("http://IP_DISPOSITIVO:3000/api/comment/:idPost", {
+            method: "GET",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            params: JSON.stringify({
+                idPost: idPost
             })
+        })).then(response => {
+            const resultComments = [];
+            response.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                resultComments.push(data);
+            });
+            setComments(resultComments);
+        }).catch((err) => {
+            console.log(err);
+        });
     }, []);
 
 

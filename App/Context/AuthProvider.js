@@ -1,7 +1,5 @@
 //Importaciones
 import React, { useState, createContext } from 'react';
-//import firebase from "firebase/app";
-import * as firebase from "firebase";
 export const AuthContext = createContext({});
 
 //Componente que realiza peticiones de autenticación
@@ -14,33 +12,49 @@ export const AuthProvider = ({ children }) => {
                 user,
                 setUser,
                 //Inicio de sesión
-                login: async (email, password) => {
-                    try {
-                        await firebase
-                            .auth()
-                            .signInWithEmailAndPassword(email, password)
-                    } catch (e) {
-                        console.log("Error login:" + e);
-                    }
+                login: (email, password) => {
+                    fetch(new Request("http://IP_DISPOSITIVO:3000/api/signin", {
+                        method: "POST",
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    })).catch((e) => {
+                        console.log("Error login: " + e);
+                    })
                 },
                 //Registro
-                register: async (email, password) => {
-                    try {
-                        await firebase
-                            .auth()
-                            .createUserWithEmailAndPassword(email, password)
-                    } catch (e) {
-                        console.log("Error register:" + e);
-                    }
+                register: (email, password) => {
+                    fetch(new Request("http://IP_DISPOSITIVO:3000/api/signup", {
+                        method: "POST",
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    })).catch((e) => {
+                        console.log("Error register: " + e);
+                    })
                 },
                 //Cierre de sesión
-                logout: async () => {
-                    try {
-                        await firebase.auth().signOut()
-                    } catch (e) {
-                        console.error("Error log::" + e);
-                    }
-                },
+                logout: () => {
+                    fetch(new Request("http://IP_DISPOSITIVO:3000/api/signout", {
+                        method: "POST",
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                    })).catch((e) => {
+                        console.error("Error logout: " + e);
+                    })
+                }
             }}>{children}</AuthContext.Provider>
     );
 };

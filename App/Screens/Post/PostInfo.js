@@ -3,11 +3,6 @@ import { StyleSheet, View, ScrollView, Dimensions, Alert } from "react-native";
 import { Icon, Divider } from "react-native-elements";
 import Loading from "../../Components/Loading";
 import Toast from "react-native-easy-toast";
-import firebase from "firebase/app";
-import { firebaseApp } from "../../Utils/firebase";
-import "firebase/storage";
-import "firebase/firestore";
-const db = firebase.firestore(firebaseApp);
 import { StatusBar } from "expo-status-bar";
 import GeneralText from "../../Components/GeneralText";
 import Title from "../../Components/Title";
@@ -21,30 +16,30 @@ export default function PostInfo(props) {
     const { navigation, route } = props;
     const { id } = route.params;
     const [post, setPost] = useState(null);
-    const [photoOwner, setPhotoOwner] = useState({});
+
 
     useEffect(() => {
         navigation.setOptions({ headerShown: false });
-        db.collection("post")
-            .doc(id)
-            .get()
-            .then((response) => {
+        fetch(new Request("http://IP_DISPOSITIVO:3000/api/postInfo/:id", {
+            method: "GET",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            params: JSON.stringify({
+                id: id
+            })
+        }))
+            .then(response => {
                 const data = response.data();
                 data.id = response.id;
                 setPost(data);
-
-                /* firebase.storage()
-                     .ref(`avatar/${post.createBy}`)
-                     .getDownloadURL()
-                     .then(async (response) => {
-                         setPhotoOwner(response)
-                     }).catch((e) => {
-                         console.log(e)
-                     });*/
             })
+            .catch((err) => {
+                console.log(err);
+            });
 
     }, [id])
-
 
 
     //Function for deleting post register
@@ -59,9 +54,19 @@ export default function PostInfo(props) {
             {
                 text: "Eliminar",
                 onPress: () => {
-                    db.collection("post").doc(id).delete().then(() => {
+                    fetch(new Request("http://IP_DISPOSITIVO:3000/api/postInfo/:id", {
+                        method: "DELETE",
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        params: JSON.stringify({
+                            id: id
+                        })
+                    })).then(response => {
                         navigation.navigate("post");
-                    }).catch((error) => {
+                    }).catch((err) => {
+                        console.log(err);
                         toastRef.current.show("Ha habido un error, inténtelo más tarde")
                     });
                 },
