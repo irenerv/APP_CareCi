@@ -1,7 +1,10 @@
+//Importaciones
 import React from 'react';
 import { Image } from 'react-native-elements';
 import Carousel from "react-native-snap-carousel";
 
+//Componente para mostrar imágenes en carousel: 
+//deslizar en pantalla para encontrar otras imágenes
 export default function CarouselAnimated(props) {
     const { arrayImages, height, width } = props;
 
@@ -10,7 +13,6 @@ export default function CarouselAnimated(props) {
             <Image
                 style={{ width, height }}
                 source={{ uri: item }}
-
             />)
     }
 

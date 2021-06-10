@@ -1,7 +1,9 @@
+//Importaciones
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Overlay } from "react-native-elements";
 
+//Componente para mostrar información sobre un modal
 export default function Modal(props) {
     const { isVisible, setIsVisible, children, } = props;
     const closeModal = () => setIsVisible(false);
@@ -19,6 +21,7 @@ export default function Modal(props) {
     );
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     overlay: {
         height: "auto",

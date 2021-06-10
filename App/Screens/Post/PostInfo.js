@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Dimensions, Alert } from "react-native";
-import { Icon } from "react-native-elements";
+import { StyleSheet, View, ScrollView, Dimensions, Alert } from "react-native";
+import { Icon, Divider } from "react-native-elements";
 import Loading from "../../Components/Loading";
 import Toast from "react-native-easy-toast";
 import firebase from "firebase/app";
@@ -43,15 +43,15 @@ export default function PostInfo(props) {
                      });*/
             })
 
-    }, [photoOwner])
+    }, [id])
 
 
 
     //Function for deleting post register
     const deleteData = () => {
         Alert.alert(
-            "Eliminar registro de vacuna",
-            "¿Estás seguro de querer eliminar el registro de vacuna",
+            "Eliminar reporte",
+            "¿Estás seguro de querer eliminar este reporte"
             [{
                 text: "Cancel",
                 style: "cancel"
@@ -89,12 +89,12 @@ export default function PostInfo(props) {
                         height={300}
                         width={screenWidth}
                     />
-                    <GeneralText text={"Publicado el:\n" + post.createAt} />
+                    <GeneralText text={"Publicado: " + post.createAt} style={styles.dateStyle} />
                     <Title text={post.postHeader} />
 
-                    <GeneralText text={"" + post.date} />
-                    <GeneralText text={post.description} />
-
+                    <GeneralText text={"Fecha del suceso:\n" + post.date} style={styles.dateStyle} />
+                    <GeneralText text={post.description} style={styles.descriptionStyle} />
+                    <Divider style={{ backgroundColor: "#F7B948", marginTop: 15, width: "90%", alignSelf: "center" }} />
                     <PostLocation
                         location={post.location}
                         address={post.address}
@@ -108,7 +108,7 @@ export default function PostInfo(props) {
                         reverse
                         type="font-awesome"
                         name="trash-o"
-                        color="#192637"
+                        color="#F7B948"
                         containerStyle={styles.btnContainer}
                         onPress={deleteData}
                     />
@@ -125,7 +125,7 @@ function PostLocation(props) {
 
     return (
         <View style={styles.viewPostInfo}>
-            <GeneralText text="Información General" color="#3b3835" size={14} />
+            <GeneralText text="Ubicación" color="#fff" size={20} />
             <Map location={location} name={name} height={200} />
 
         </View>
@@ -136,12 +136,12 @@ const styles = StyleSheet.create({
     viewBody: {
         flex: 1,
         marginTop: 40,
-        backgroundColor: "white",
+        backgroundColor: "#202020",
     },
     btnContainer: {
         position: "absolute",
-        bottom: 2,
-        right: 2,
+        bottom: 30,
+        right: 10,
     },
     viewStyleInfo: {
         backgroundColor: "#fbd0b1",
@@ -158,6 +158,23 @@ const styles = StyleSheet.create({
     },
     viewPostInfo: {
         margin: 15,
-        marginTop: 25,
+        marginTop: 15,
     },
+    dateStyle: {
+        fontFamily: "Quicksand-Medium",
+        color: "#fff",
+        fontSize: 15,
+        position: "absolute",
+        right: 5,
+        marginTop: 5,
+    },
+    descriptionStyle: {
+        fontFamily: "Quicksand-Medium",
+        color: "#fff",
+        fontSize: 15,
+        alignSelf: "center",
+        marginTop: 100,
+        marginBottom: 20
+
+    }
 });

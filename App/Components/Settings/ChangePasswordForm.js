@@ -1,3 +1,4 @@
+//Importaciones
 import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Input, Button } from "react-native-elements";
@@ -5,6 +6,7 @@ import { size } from "lodash";
 import { reauthenticate } from "../../Utils/api";
 import * as firebase from "firebase"
 
+//Componente para realizar cambios de contraseña
 export default function ChangePasswordForm(props) {
     const { setShowModal, toastRef } = props;
     const [showPassword, setShowPassword] = useState(false);
@@ -12,10 +14,12 @@ export default function ChangePasswordForm(props) {
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
+    //Carga de información
     const onChange = (e, type) => {
         setFormData({ ...formData, [type]: e.nativeEvent.text });
     }
 
+    //Validación de información y petición de actualización
     const onSubmit = async () => {
         let isSetErrors = true;
         let errorsTemp = {};
@@ -67,6 +71,7 @@ export default function ChangePasswordForm(props) {
 
 
     return (
+        //Formulario de actualización
         <View style={styles.view} >
             <Input
                 placeholder="Contraseña actual"
@@ -130,7 +135,7 @@ function defaultValue() {
     }
 }
 
-
+//Hoja de estilos
 const styles = StyleSheet.create({
     view: {
         alignItems: "center",
@@ -146,6 +151,6 @@ const styles = StyleSheet.create({
         width: "75%",
     },
     btn: {
-        backgroundColor: "#E37B58",
+        backgroundColor: "#F7B948",
     },
 });

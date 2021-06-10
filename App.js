@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { LogBox } from "react-native";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";

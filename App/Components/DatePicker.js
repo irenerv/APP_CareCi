@@ -1,10 +1,11 @@
+//Importaciones
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Button } from "react-native-elements";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
 
-
+//Componente DatePicker, despliega un reloj o calendario para seleccionar hora o fecha
 export default function DatePicker(props) {
 
     const { setDateTime, mode, title } = props
@@ -18,7 +19,7 @@ export default function DatePicker(props) {
         setDatePickerVisibility(false);
     };
 
-
+    //Modalidad "time" o "dateTime"
     const handleConfirm = (date) => {
         if (mode === "time") {
             const time = moment(date).format('HH:mm');
@@ -35,6 +36,7 @@ export default function DatePicker(props) {
 
     return (
         <View>
+            {/* Visualización de componente */}
             <Button
                 title={title}
                 onPress={showDatePicker}
@@ -54,17 +56,18 @@ export default function DatePicker(props) {
 
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     btnContainer: {
-        marginTop: 40,
+        marginTop: 5,
         marginBottom: 50,
         alignItems: "center",
 
     },
     btnStyle: {
-        width: "60%",
-        height: 60,
-        backgroundColor: "#FED0CE",
+        width: "118%",
+        height: 45,
+        backgroundColor: "#F7B948",
         borderRadius: 10,
     },
     btnTitleStyle: {

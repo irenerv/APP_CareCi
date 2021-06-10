@@ -1,3 +1,4 @@
+//Importación
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Button, Avatar, Divider } from "react-native-elements";
@@ -8,6 +9,7 @@ import "firebase/firestore";
 import GeneralText from "../GeneralText";
 const db = firebase.firestore(firebaseApp);
 
+//Función para mostrar lista de comentarios de un post
 export default function ListComments(props) {
     const { navigation, idPost } = props;
     const [comments, setComments] = useState(null);
@@ -30,6 +32,7 @@ export default function ListComments(props) {
 
     return (
         <View>
+            {/* Botón para agregar más comentarios */}
             <Button
                 title="Escribe una opinión"
                 icon={{
@@ -46,20 +49,17 @@ export default function ListComments(props) {
                     })
                 }}
             />
+            {map(comments, (comment, index) => (
+                <Comment key={index} comment={comment} />
+            ))}
 
-            {<>
-                {map(comments, (comment, index) => (
-                    <Comment key={index} comment={comment} />
-                ))}
-                {< Divider style={styles.dividerStyle} />}
-            </>
-            }
         </View>
     )
 }
 
+//Visualiación de cada comentario
 function Comment(props) {
-    const { key, comment, createAt, avatarUser } = props.comment;
+    const { comment, createAt, avatarUser } = props.comment;
 
     return (
 
@@ -74,8 +74,8 @@ function Comment(props) {
                 />
             </View>
             <View style={styles.viewInfo}>
-                <GeneralText text={comment} color={"black"} size={15} />
-                <GeneralText text={createAt} color={"black"} size={15} style={styles.date} viewStyle={styles.viewDate} />
+                <GeneralText text={comment} color={"white"} size={16} />
+                <GeneralText text={createAt} style={styles.date} viewStyle={styles.viewDate} />
 
             </View>
 
@@ -84,17 +84,18 @@ function Comment(props) {
     );
 }
 
+//Hola de estilos
 const styles = StyleSheet.create({
     btnContainer: {
         marginTop: 40,
-        marginBottom: 50,
+        marginBottom: 80,
         alignItems: "center",
 
     },
     btnStyle: {
         width: "55%",
         height: 60,
-        backgroundColor: "#FED0CE",
+        backgroundColor: "#F7B948",
         borderRadius: 10,
     },
     btnTitleStyle: {
@@ -105,9 +106,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         padding: 10,
         paddingBottom: 20,
-        borderBottomColor: '#c1c1c1',
+        borderBottomColor: "#F7B948",
         borderBottomWidth: 1,
-        width: "95%",
+        width: "94%",
         alignSelf: "center"
 
     },

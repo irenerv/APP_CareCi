@@ -1,3 +1,4 @@
+//Importaciones
 import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, View, ScrollView, Text } from "react-native";
 import { Icon, Input, Button } from "react-native-elements";
@@ -15,11 +16,14 @@ import Modal from "../Modal";
 import DatePicker from "../DatePicker";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
-const db = firebase.firestore(firebaseApp);
+import axios from "axios";
+//const db = firebase.firestore(firebaseApp);
 
+//Formulario de posts
 export default function PostForm(props) {
     const { toastRef, setIsLoading, navigation } = props;
-    const { user } = useContext(AuthContext);
+    const { user } = useContext(AuthContext); //Status de autenticación
+    //UseState de variables del formulario
     const currentDate = moment(new Date()).format('lll');
     const [postHeader, setPostHeader] = useState("");
     const [postDescription, setPostDescription] = useState("");
@@ -29,6 +33,7 @@ export default function PostForm(props) {
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [imageSelected, setImageSelected] = useState([]);
 
+    //Función de validación de datos y petición a la API para almacenamiento de información
     const addPost = () => {
 
         if (!postHeader || !postDescription || !date || !address) {
@@ -39,9 +44,40 @@ export default function PostForm(props) {
             toastRef.current.show("Tienes que agregar un punto de localización");
         } else {
             setIsLoading(true);
+            //Realizado con firebase directamente
+            // uploadImageStorage().then((response) => {
+            //     db.collection("post")
+            //         .add({
+            //             postHeader: postHeader,
+            //             description: postDescription,
+            //             images: response,
+            //             date: date,
+            //             address: address,
+            //             location: localization,
+            //             createAt: currentDate,
+            //             createBy: user.uid,
+            //         })
+            //         .then(() => {
+            //             setIsLoading(false);
+            //             toastRef.current.show("¡Listo!");
+            //             navigation.navigate("post");
+            //         }).catch(() => {
+            //             setIsLoading(false);
+            //             toastRef.current.show("Error al publicar, inténtalo más tarde");
+            //         })
+            // });
+            //}
+
+            //Realizado mediante la API
             uploadImageStorage().then((response) => {
-                db.collection("post")
-                    .add({
+                //console.log(response)
+                fetch(new Request("http://192.168.100.3:3000/api/post", {
+                    method: "POST",
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
                         postHeader: postHeader,
                         description: postDescription,
                         images: response,
@@ -51,18 +87,22 @@ export default function PostForm(props) {
                         createAt: currentDate,
                         createBy: user.uid,
                     })
-                    .then(() => {
+                }))
+                    .then((response) => {
+                        //console.log(JSON.stringify(response));
                         setIsLoading(false);
                         toastRef.current.show("¡Listo!");
                         navigation.navigate("post");
-                    }).catch(() => {
+                    }).catch((err) => {
                         setIsLoading(false);
                         toastRef.current.show("Error al publicar, inténtalo más tarde");
+                        console.log(err)
                     })
             });
         }
     };
 
+    //Realizado con firebase directamente
     const uploadImageStorage = async () => {
         const imageBlob = [];
 
@@ -70,6 +110,7 @@ export default function PostForm(props) {
             map(imageSelected, async (image) => {
                 const response = await fetch(image);
                 const blob = await response.blob();
+                console.log("b:" + JSON.stringify(blob))
                 const ref = firebase.storage().ref("post").child(uuid());
                 await ref.put(blob).then(async (result) => {
                     await firebase
@@ -84,12 +125,81 @@ export default function PostForm(props) {
         );
 
         return imageBlob;
+
     };
 
+    //Realizado con firebase directamente
+    // const uploadImageStorage = async () => {
+    //     const imageBlob = [];
+
+    // //     await Promise.all(
+    //         map(imageSelected, async (image) => {
+    //             const response = await fetch(image);
+    //             const blob = await response.blob();
+    //             fetch(new Request("http://192.168.100.3:3000/api/postImage", {
+    //                 method: "POST",
+    //                 headers: {
+    //                     Accept: 'application/json',
+    //                     'Content-Type': 'application/json'
+    //                 },
+    //                 body: JSON.stringify({
+    //                     blob: blob
+    //                 })
+    //             }))
+    //                 .then(response => {
+    //                     // const images = JSON.stringify(response);
+    //                     // imageBlob.push(images.blob);
+
+    //                     console.log(JSON.stringify(response))
+    //                 })
+    //                 .then(response => {
+    //                     console.log(JSON.stringify(response))
+    //                 })
+    //                 .catch((err) => {
+    //                     console.log(err);
+    //                 });
+    //         })
+    //     );
+
+    //     return imageBlob;
+
+    // };
+
+    // //Realizado mediante la API
+    // const uploadImageStorage = () => {
+    //     const imageBlob = []
+    //     fetch(new Request("http://192.168.100.3:3000/api/postImage", {
+    //         method: "POST",
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             imageSelected: imageSelected
+    //         })
+    //     }))
+    //         .then(response => {
+    //             // const images = JSON.stringify(response);
+    //             // imageBlob.push(images.blob);
+
+    //             console.log(JSON.stringify(response))
+    //         })
+    //         .then(response => {
+    //             console.log(JSON.stringify(response))
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    //     return imageBlob;
+    // };
+
     return (
+        //Elemeentos de página
         <ScrollView style={styles.scrollView}>
             <ShowImage mainImage={imageSelected[0]} />
             <View style={styles.formStyle}>
+
+                {/* Llamada al formulario */}
                 <FormAdd
                     setPostHeader={setPostHeader}
                     setPostDescription={setPostDescription}
@@ -98,11 +208,14 @@ export default function PostForm(props) {
                     localization={localization}
                     setIsVisibleMap={setIsVisibleMap}
                 />
+                {/* Carga de imágenes */}
                 <UploadImage
                     toastRef={toastRef}
                     imageSelected={imageSelected}
                     setImageSelected={setImageSelected}
                 />
+
+                {/* Llamada a la función de validación y almacenamiento */}
                 <Button
                     title="Crear perfil"
                     onPress={addPost}
@@ -110,6 +223,8 @@ export default function PostForm(props) {
                     buttonStyle={styles.btnStyle}
                     titleStyle={styles.btnTitleStyle}
                 />
+
+                {/* Map picker */}
                 <Map
                     isVisibleMap={isVisibleMap}
                     setIsVisibleMap={setIsVisibleMap}
@@ -123,6 +238,7 @@ export default function PostForm(props) {
     );
 }
 
+//ofrmulario
 function FormAdd(props) {
     const {
         setPostHeader,
@@ -179,7 +295,7 @@ function FormAdd(props) {
                         type="font-awesome"
                         name="map-marker"
                         iconStyle={{ color: localization ? "red" : "#c2c2c2", paddingRight: 16 }}
-                        size={20}
+                        size={22}
                         onPress={() => setIsVisibleMap(true)}
                     />}
                 onChange={(e) => setAddress(e.nativeEvent.text)}
@@ -194,15 +310,17 @@ function FormAdd(props) {
     );
 }
 
-
+//Función de visualización de mapa con configuración inicial.
 function Map(props) {
     const { isVisibleMap, setIsVisibleMap, toastRef, setLocalization } = props;
     const [location, setLocation] = useState(null);
+
     useEffect(() => {
         (async () => {
-
+            //Petición de permisos al usuario
             let { status } = await Location.requestForegroundPermissionsAsync()
 
+            //Status de permiso
             if (status !== 'granted') {
                 toastRef.current.show(
                     "Primero debes aceptar los permisos de localización", 3000
@@ -210,6 +328,7 @@ function Map(props) {
             } else {
                 const loc = await Location.getCurrentPositionAsync({});
                 setLocation({
+                    //Ubicación inicial
                     latitude: loc.coords.latitude,
                     longitude: loc.coords.longitude,
                     latitudeDelta: 0.001,
@@ -226,15 +345,18 @@ function Map(props) {
     }
 
     return (
+        //Modal de visualización del mapa picker
         <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
             <View>
                 {location && (
+                    //Mapa
                     <MapView
                         style={styles.mapStyle}
                         initialRegion={location}
                         showsUserLocation={true}
                         onRegionChange={(region) => setLocation(region)}
                     >
+                        {/* Marcador de punto de ubicación */}
                         <MapView.Marker
                             coordinate={{
                                 latitude: location.latitude,
@@ -263,10 +385,11 @@ function Map(props) {
 
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     scrollView: {
         height: "100%",
-        backgroundColor: "#fff",
+        backgroundColor: "#202020",
 
     },
     viewForm: {
@@ -285,11 +408,11 @@ const styles = StyleSheet.create({
     containerInput: {
         marginBottom: 15,
         width: "80%",
-        height: 45,
+        height: 50,
         opacity: 0.7,
         backfaceVisibility: "hidden",
         //backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        backgroundColor: "#F4CCB5",
+        backgroundColor: "#F7B948",
         borderRadius: 10,
 
     },
@@ -297,7 +420,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
     },
     inputStyle: {
-        color: "#c1c1c1"
+        color: "#202020"
     },
     picker: {
         height: 50,
@@ -307,6 +430,7 @@ const styles = StyleSheet.create({
     },
     pickerHeader: {
         margin: 10,
+        marginBottom: 15,
         alignItems: "flex-end",
         fontSize: 19,
         color: "#c1c1c1"
@@ -324,7 +448,7 @@ const styles = StyleSheet.create({
     btnStyle: {
         width: "40%",
         height: 60,
-        backgroundColor: "#FED0CE",
+        backgroundColor: "#F7B948",
         borderRadius: 10,
     },
     btnTitleStyle: {

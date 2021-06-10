@@ -38,18 +38,18 @@ const styles = StyleSheet.create({
     textHeader: {
         fontWeight: "bold",
         fontSize: 40,
-        color: "#192637",
+        color: "#fff",
         paddingLeft: 10,
         paddingTop: 20,
         paddingBottom: 10,
     },
     viewRegister: {
         flex: 3,
-        backgroundColor: "#fff",
+        backgroundColor: "#202020",
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 50,
+        paddingVertical: 100,
     },
     logo: {
         width: "50%",

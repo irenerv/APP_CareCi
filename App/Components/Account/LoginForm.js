@@ -1,3 +1,4 @@
+//Importaciones
 import React, { useState, useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
@@ -6,6 +7,7 @@ import { validateEmail } from "../../Utils/validations";
 import Loading from "../Loading";
 import { AuthContext } from "../../Context/AuthProvider";
 
+//Formulario de Inicio de sesión
 export default function LoginForm(props) {
     const { toastRef } = props;
     const [showPassword, setShowPassword] = useState(false);
@@ -40,6 +42,8 @@ export default function LoginForm(props) {
             <Input
                 placeholder="Correo Electrónico"
                 containerStyle={styles.inputForm}
+                inputStyle={styles.inputStyle}
+                placeholderTextColor={"#fff"}
                 onChange={(event) => onChange(event, "email")}
                 keyboardType="email-address"
                 rightIcon={
@@ -54,6 +58,8 @@ export default function LoginForm(props) {
             <Input
                 placeholder="Contraseña"
                 containerStyle={styles.inputForm}
+                inputStyle={styles.inputStyle}
+                placeholderTextColor={"#fff"}
                 onChange={(event) => onChange(event, "password")}
                 password={true}
                 secureTextEntry={showPassword ? false : true}
@@ -79,6 +85,7 @@ export default function LoginForm(props) {
     );
 }
 
+//Información default
 function defaultFormValue() {
     return {
         email: "",
@@ -86,6 +93,7 @@ function defaultFormValue() {
     };
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     formContainer: {
         flex: 1,
@@ -111,9 +119,12 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     iconRight: {
-        color: "#c1c1c1",
+        color: "#fff",
     },
     btnTitleStyle: {
         color: "white",
+    },
+    inputStyle: {
+        color: "#fff"
     },
 });

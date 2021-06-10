@@ -1,3 +1,4 @@
+//Importaciones
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native'
 import { Button, Input } from "react-native-elements";
@@ -5,8 +6,7 @@ import * as firebase from "firebase";
 import { validateEmail } from "../../Utils/validations";
 import { reauthenticate } from "../../Utils/api";
 
-
-
+//Componente para realizar cambios de email del usuario
 export default function ChangeEmailForm(props) {
     const { email, setShowModal, toastRef, setReloadUserInfo } = props;
     const [formData, setFormData] = useState(defaultFormValue());
@@ -14,10 +14,11 @@ export default function ChangeEmailForm(props) {
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
+    //Carga de información
     const onChange = (e, type) => {
         setFormData({ ...formData, [type]: e.nativeEvent.text })
     }
-
+    //Validación de información y petición de actualización
     const onSubmit = () => {
         setErrors({});
         if (!formData.email || email === formData.email) {
@@ -56,6 +57,7 @@ export default function ChangeEmailForm(props) {
     };
 
     return (
+        //Visualización de formulario
         <View style={styles.view}>
             <Input
                 placeholder="Correo eletronico"
@@ -101,6 +103,7 @@ function defaultFormValue() {
     }
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     view: {
         alignItems: "center",
@@ -115,6 +118,6 @@ const styles = StyleSheet.create({
         width: "75%",
     },
     btn: {
-        backgroundColor: "#E37B58",
+        backgroundColor: "#F7B948",
     },
 });

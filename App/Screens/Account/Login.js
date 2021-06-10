@@ -1,10 +1,11 @@
-//import { Assets } from "@react-navigation/stack";
+//Importaciones
 import React, { useRef } from "react";
 import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-easy-toast";
 import LoginForm from "../../Components/Account/LoginForm";
 
+//Componente conformado de formulario de Login y petición de autenticación
 export default function Login() {
     const toastRef = useRef();
     return (
@@ -26,6 +27,7 @@ export default function Login() {
     );
 }
 
+//Función que muestra la opción de crear una cuenta
 function CreateAccount() {
     const navigation = useNavigation();
     return (
@@ -40,7 +42,7 @@ function CreateAccount() {
         </Text>
     );
 }
-
+//Hoja de estilos
 const styles = StyleSheet.create({
     viewContainer: {
         flex: 1,
@@ -60,16 +62,16 @@ const styles = StyleSheet.create({
     },
     viewLogin: {
         flex: 3,
-        backgroundColor: "#fff",
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        backgroundColor: "#202020",
+        borderTopLeftRadius: 40,
+        borderTopRightRadius: 40,
         paddingHorizontal: 20,
-        paddingVertical: 70,
+        paddingVertical: 125,
     },
     textWelcome: {
         fontWeight: "bold",
         fontSize: 40,
-        color: "#192637",
+        color: "#fff",
         paddingLeft: 10,
         paddingBottom: 4,
     },
@@ -77,9 +79,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginHorizontal: 20,
         textAlign: "center",
+        color: "#fff",
     },
     btnRegister: {
-        color: "#192637",
+        color: "#fff",
         fontWeight: "bold",
     },
 });

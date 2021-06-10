@@ -1,6 +1,8 @@
+//Impoetaciones
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
+//Componente subtitle de texto personalizado
 export default function SubTitle(props) {
     const { text } = props;
     return (
@@ -10,7 +12,7 @@ export default function SubTitle(props) {
     )
 }
 
-
+//Hoja de estilos
 const styles = StyleSheet.create({
     viewStyle: {
         marginTop: 24,
@@ -20,9 +22,7 @@ const styles = StyleSheet.create({
         fontFamily: "JosefinSans-SemiBold",
         fontSize: 22,
         color: "#3b3835",
-
     }
-
 })
 
 

@@ -1,8 +1,11 @@
+
+//Importaciones
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Settings from "../Screens/Settings/Settings";
 const Stack = createStackNavigator();
 
+//Stack de settings
 export default function SettingStack() {
 
     return (

@@ -1,6 +1,8 @@
+//Importaciones
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
+//Componente de texto personalizado
 export default function GeneralText(props) {
     const { text, color, size, style, viewStyle } = props;
     return (
@@ -17,7 +19,7 @@ export default function GeneralText(props) {
     )
 }
 
-
+//Hoja de estilos
 const styles = StyleSheet.create({
     viewStyle: {
         marginHorizontal: 8,

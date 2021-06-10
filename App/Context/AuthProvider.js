@@ -1,8 +1,10 @@
+//Importaciones
 import React, { useState, createContext } from 'react';
 //import firebase from "firebase/app";
 import * as firebase from "firebase";
 export const AuthContext = createContext({});
 
+//Componente que realiza peticiones de autenticación
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
@@ -11,6 +13,7 @@ export const AuthProvider = ({ children }) => {
             value={{
                 user,
                 setUser,
+                //Inicio de sesión
                 login: async (email, password) => {
                     try {
                         await firebase
@@ -20,6 +23,7 @@ export const AuthProvider = ({ children }) => {
                         console.log("Error login:" + e);
                     }
                 },
+                //Registro
                 register: async (email, password) => {
                     try {
                         await firebase
@@ -29,6 +33,7 @@ export const AuthProvider = ({ children }) => {
                         console.log("Error register:" + e);
                     }
                 },
+                //Cierre de sesión
                 logout: async () => {
                     try {
                         await firebase.auth().signOut()

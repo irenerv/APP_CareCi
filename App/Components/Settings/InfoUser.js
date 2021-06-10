@@ -1,3 +1,4 @@
+//Importaciones
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Avatar } from "react-native-elements";
@@ -6,6 +7,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Camera } from 'expo-camera';
 import GeneralText from "../GeneralText";
 
+//Componente que muestra la información del usuario
 export default function InfoUser(props) {
     const { userInfo: { uid, photoURL, displayName, email },
         toastRef,
@@ -13,14 +15,15 @@ export default function InfoUser(props) {
         setLoadingText,
     } = props;
 
-
-
     const changeAvatar = async () => {
+        //Petición de permisos de acceso a cámara
         const resultPermissions = await Camera.requestPermissionsAsync();
 
+        //Status de permisos
         if (resultPermissions.status === "denied") {
             toastRef.currrent.show("Es necesario aceptar los permisos de la galeria");
         } else {
+            //Formato de imágenes
             const result = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
                 aspect: [4, 3],
@@ -38,6 +41,7 @@ export default function InfoUser(props) {
         }
     };
 
+    //Actualización de Avatar
     const uploadImage = async (uri) => {
         setLoadingText("Actualizando avatar");
         setLoading(true);
@@ -78,8 +82,8 @@ export default function InfoUser(props) {
                     photoURL ? { uri: photoURL } : require("../../../assets/img/default_avatar.jpg")}
             />
             <View>
-                <GeneralText text={displayName ? displayName : "anónimo"} color="#3b3835" size={14} />
-                <GeneralText text={email ? email : "Social Login"} color="#3b3835" size={14} />
+                <GeneralText text={displayName ? displayName : "anónimo"} color="#fff" size={16} />
+                <GeneralText text={email ? email : "Social Login"} color="#fff" size={16} />
 
             </View>
         </View>
@@ -87,12 +91,13 @@ export default function InfoUser(props) {
     );
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     viewUserInfo: {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
-        backgroundColor: "#fff",
+        backgroundColor: "#202020",
         paddingTop: 30,
         paddingBottom: 30,
     },

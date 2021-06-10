@@ -1,3 +1,5 @@
+
+//Importaciones
 import React, { useContext, useState, useEffect } from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -8,11 +10,13 @@ import TabNavigation from "./TabNavigation";
 import { AuthContext } from "../Context/AuthProvider";
 import Loading from "../Components/Loading";
 
+//Componente Routes, valida el status de autenticación y gestiona la navegación a mostrar
 export default function Routes() {
     const { user, setUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [initializing, setInitializing] = useState(firebaseApp);
 
+    //Peticiones de status de autenticación
     function onAuthStateChanged(user) {
         setUser(user);
         if (initializing) setInitializing(false);
@@ -31,6 +35,7 @@ export default function Routes() {
     }
 
     return (
+        //Selección de navegación según la autenticación del usuario
         <NavigationContainer>
             {user ? <TabNavigation /> : <AuthNavigation />}
         </NavigationContainer>);

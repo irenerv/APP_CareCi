@@ -1,6 +1,8 @@
+//Importaciones
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
+//Componente de texto personalizado
 export default function Title(props) {
     const { text } = props;
     return (
@@ -9,6 +11,8 @@ export default function Title(props) {
         </View>
     )
 }
+
+//Hoja de estilo
 const styles = StyleSheet.create({
     viewStyle: {
         marginTop: 64,
@@ -17,7 +21,7 @@ const styles = StyleSheet.create({
     textStyle: {
         fontFamily: "JosefinSans-SemiBold",
         fontSize: 38,
-        color: "#3b3835"
+        color: "#FFF"
     }
 
 })

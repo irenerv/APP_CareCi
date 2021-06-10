@@ -47,6 +47,8 @@ export default function RegisterForm(props) {
             <Input
                 placeholder="Correo electrónico"
                 containerStyle={styles.inputForm}
+                inputStyle={styles.inputStyle}
+                placeholderTextColor={"#fff"}
                 onChange={(event) => onChange(event, "email")}
                 keyboardType="email-address"
                 rightIcon={
@@ -60,6 +62,8 @@ export default function RegisterForm(props) {
             <Input
                 placeholder="Contraseña"
                 containerStyle={styles.inputForm}
+                inputStyle={styles.inputStyle}
+                placeholderTextColor={"#fff"}
                 password={true}
                 secureTextEntry={showPassword ? false : true}
                 onChange={(event) => onChange(event, "password")}
@@ -75,6 +79,8 @@ export default function RegisterForm(props) {
             <Input
                 placeholder="Repetir contraseña"
                 containerStyle={styles.inputForm}
+                inputStyle={styles.inputStyle}
+                placeholderTextColor={"#fff"}
                 password={true}
                 secureTextEntry={showRepeatPassword ? false : true}
                 onChange={(event) => onChange(event, "repeatPassword")}
@@ -135,6 +141,9 @@ const styles = StyleSheet.create({
         color: "#fff",
     },
     iconRight: {
-        color: "#c1c1c1",
+        color: "#fff",
+    },
+    inputStyle: {
+        color: "#fff"
     },
 });

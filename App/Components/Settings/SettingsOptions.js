@@ -1,3 +1,4 @@
+//Importaciones
 import React, { useState } from 'react';
 import { StyleSheet, View } from "react-native";
 import { ListItem } from "react-native-elements";
@@ -7,11 +8,13 @@ import ChangeDisplayNameForm from "./ChangeDisplayName";
 import ChangeEmailForm from "./ChangeEmailForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
-
+//Componente de visualizaciones de formularios para modificar información
 export default function AccountOptions(props) {
     const { userInfo, toastRef, setReloadUserInfo } = props;
     const [showModal, setShowModal] = useState(false);
     const [renderComponent, setRenderComponent] = useState(null);
+
+    //Switch para mostrar el caso seleccionado por el usuario
     const selectedComponent = (key) => {
         switch (key) {
             case "displayName":
@@ -55,6 +58,7 @@ export default function AccountOptions(props) {
     const menuOptions = generateOptions(selectedComponent);
 
     return (
+        //Visualización de formulario seleccionado
         <View>
             {map(menuOptions, (menu, index) => (
                 <ListItem
@@ -71,6 +75,8 @@ export default function AccountOptions(props) {
                         color: menu.iconColorRight,
                     }}
                     containerStyle={styles.menuItem}
+                    style={{ color: "#fff" }}
+                    titleStyle={{ color: "#fff", fontFamily: "JosefinSans-SemiBold", fontSize: 15, }}
                     onPress={menu.onPress}
                 />
             ))}
@@ -89,35 +95,38 @@ function generateOptions(selectedComponent) {
             title: "Cambiar nombre y apellidos.",
             iconType: "material-community",
             iconNameLeft: "account-circle",
-            iconColorLeft: "#ccc",
+            iconColorLeft: "#fff",
             iconNameRight: "chevron-right",
-            iconColorRight: "#ccc",
+            iconColorRight: "#fff",
             onPress: () => selectedComponent("displayName"),
         },
         {
             title: "Cambiar email",
             iconType: "material-community",
             iconNameLeft: "at",
-            iconColorLeft: "#ccc",
+            iconColorLeft: "#fff",
             iconNameRight: "chevron-right",
-            iconColorRight: "#ccc",
+            iconColorRight: "#fff",
             onPress: () => selectedComponent("email"),
         },
         {
             title: "Cambiar contraseña",
             iconType: "material-community",
             iconNameLeft: "lock-reset",
-            iconColorLeft: "#ccc",
+            iconColorLeft: "#fff",
             iconNameRight: "chevron-right",
-            iconColorRight: "#ccc",
+            iconColorRight: "#fff",
             onPress: () => selectedComponent("password"),
         },
     ];
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     menuItem: {
         borderBottomWidth: 1,
-        borderBottomColor: "#e3e3e3",
+        borderBottomColor: "#fff",
+        backgroundColor: "#202020",
+
     },
 });

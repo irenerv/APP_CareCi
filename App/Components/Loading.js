@@ -1,7 +1,9 @@
+//Importaciones
 import React from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { Overlay } from "react-native-elements";
 
+//Componente Loading, permite al usuario visualizar un indicador de actividad cuando algo está cargando
 export default function Loading(props) {
     const { isVisible, text } = props;
     return (
@@ -18,17 +20,13 @@ export default function Loading(props) {
     );
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     overlay: {
         height: 150,
         width: "60%",
         backgroundColor: "#EBE5E2",
-        //backgroundColor: "rgba(255, 174, 174, 0.9)",
-        //borderColor: "#F7B948",
-        //borderWidth: 2,
         borderRadius: 10,
-
-
     },
     view: {
         flex: 1,
@@ -41,6 +39,5 @@ const styles = StyleSheet.create({
         marginTop: 10,
         paddingHorizontal: 5,
         textAlign: "center"
-
     },
 });

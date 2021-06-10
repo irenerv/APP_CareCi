@@ -1,3 +1,4 @@
+//Importaciones
 import React from "react";
 import { StyleSheet, View, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Image } from "react-native-elements";
@@ -5,10 +6,10 @@ import { size } from "lodash";
 import { useNavigation } from "@react-navigation/native";
 import GeneralText from "../../Components/GeneralText"
 
-
-
+//Función para mostrar la lista de post publicados
 export default function ListPost(props) {
     const { post, handleLoadMore, isLoading } = props;
+    // console.log(post)
     const navigation = useNavigation();
     return (
         <View>
@@ -26,8 +27,8 @@ export default function ListPost(props) {
             ) : (
                 <View style={styles.loaderPosts}>
                     {/* Indicadores de carga (retroalimentación de usuario) */}
-                    <ActivityIndicator size="large" color="black" />
-                    <GeneralText text="Cargando" color="#3b3835" size={14} />
+                    <ActivityIndicator size="large" color="white" />
+                    <GeneralText text="Cargando" color="#fff" size={14} />
                 </View>
             )}
         </View>
@@ -37,7 +38,7 @@ export default function ListPost(props) {
 // Función Post, muestra cada uno de los post almacenados en la base de datos
 function Post(props) {
     const { postData, navigation } = props;
-    const { id, images } = postData.item;
+    const { id, postHeader, images } = postData.item;
     const imagePost = images ? images[0] : null;
 
     const goInfoPost = () => {
@@ -61,11 +62,7 @@ function Post(props) {
                         style={styles.imagePost}
                         containerStyle={styles.imagePostContainer}
                     />
-                </View>
-                <View>
-                    <GeneralText text={id} size={14} />
-                    <GeneralText text={"name"} size={18} />
-
+                    <GeneralText text={postHeader} size={18} />
                 </View>
             </View>
         </TouchableOpacity>
@@ -73,23 +70,25 @@ function Post(props) {
 
 }
 
+//Retroalimentación de carga de información
 function FooterList(props) {
     const { isLoading } = props;
     if (isLoading) {
         return (
             <View style={styles.loaderPosts}>
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" color="white" />
             </View>
         )
     } else {
         return (
             <View style={styles.notFoundPost}>
-                <GeneralText text="No hay más mascotas que mostrar" color="#3b3835" size={14} />
+                <GeneralText text="No hay más reportes que mostrar" color="#fff" size={14} />
             </View>
         );
     }
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     loaderPosts: {
         marginTop: 40,
@@ -102,14 +101,14 @@ const styles = StyleSheet.create({
         marginVertical: 30,
         marginRight: 35,
         marginBottom: 20,
-        alignSelf: "center"
+        alignSelf: "center",
     },
     viewPost: {
         flexDirection: "row",
         marginTop: 10,
         alignSelf: "center",
         marginLeft: 45,
-        backgroundColor: "#E37B58",
+        backgroundColor: "#F7B948",
         borderRadius: 20,
         height: 400,
         width: "100%",
@@ -124,6 +123,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         height: 300,
         width: 303,
+        marginBottom: 20,
     },
 
     notFoundPost: {
@@ -133,5 +133,12 @@ const styles = StyleSheet.create({
     },
     noMorePosts: {
         marginTop: 50,
+    },
+    GeneralTextStyle: {
+        position: "absolute",
+        left: 30
+    },
+    viewPostImage: {
+        alignItems: "center"
     }
 });

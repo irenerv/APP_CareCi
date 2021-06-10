@@ -1,14 +1,17 @@
+//Importaciones
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Input, Button } from "react-native-elements";
 import * as firebase from "firebase";
 
+//Componente para realizar cambios de nombre del usuario
 export default function ChangeDisplayNameForm(props) {
     const { displayName, setShowModal, toastRef, setReloadUserInfo } = props;
     const [newDisplayName, setNewDisplayName] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    //Componente de validación de información y petición de acutalización de información
     const onSubmit = () => {
         setError(null);
         if (!newDisplayName) {
@@ -35,6 +38,7 @@ export default function ChangeDisplayNameForm(props) {
     };
 
     return (
+        //Visualización de Formulario
         <View style={styles.view}>
             <Input
                 placeholder="Nombre y apellidos"
@@ -59,6 +63,7 @@ export default function ChangeDisplayNameForm(props) {
     );
 }
 
+//Hoja de estilos
 const styles = StyleSheet.create({
     view: {
         alignItems: "center",
@@ -73,6 +78,6 @@ const styles = StyleSheet.create({
         width: "75%",
     },
     btn: {
-        backgroundColor: "#E37B58",
+        backgroundColor: "#F7B948",
     },
 });

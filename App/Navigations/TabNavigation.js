@@ -1,26 +1,27 @@
+//Importaciones
 import React from "react";
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Icon } from "react-native-elements";
 import PostStack from "./PostStack";
 import SettingStack from "./SettingStack";
 
-
 const Tab = createMaterialBottomTabNavigator();
 
+//Componnete de navegación Tab
 export default function TabNavigation() {
     return (
         <Tab.Navigator
-
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color }) => screenOptions(route, color),
             })}
 
             initialRouteName="Home"
-            activeColor="#f0edf6"
-            inactiveColor="#FFA689"
-            barStyle={{ backgroundColor: '#E37B58', paddingBottom: 8 }}
+            activeColor="#202020"
+            inactiveColor="#f0edf6"
+            barStyle={{ backgroundColor: '#F7B948', paddingBottom: 8 }}
 
         >
+            {/* Stacks de la navegación */}
             <Tab.Screen
                 name="post"
                 component={PostStack}
@@ -36,6 +37,7 @@ export default function TabNavigation() {
     );
 }
 
+//Carga de iconos para cada sección
 function screenOptions(route, color) {
     let iconName;
 

@@ -43,11 +43,11 @@ const styles = StyleSheet.create({
     },
     viewWelcoming: {
         flex: 1,
-        backgroundColor: "#fff",
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        backgroundColor: "#202020",
+        borderTopLeftRadius: 40,
+        borderTopRightRadius: 40,
         paddingHorizontal: 55,
-        paddingVertical: 75,
+        paddingVertical: 125,
     },
     logo: {
         height: 200,
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         textAlign: "left",
         fontSize: 30,
         fontWeight: "bold",
-        color: "#192637",
+        color: "#fff",
         marginBottom: 40,
     },
     btnStyle: {

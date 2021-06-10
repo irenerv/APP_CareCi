@@ -41,8 +41,12 @@ export default function Post(props) {
                 .get()
                 .then((response) => {
                     //Obtaining the file number to continue
-                    setStartPost(response.docs[response.docs.length - 1])
-
+                    //setStartPost(response.docs[response.docs.length - 1])
+                    if (response.docs.length > 0) {
+                        setStartPost(response.docs[response.docs.length - 1]);
+                    } else {
+                        setIsLoading(false);
+                    }
                     //Obtaining every post in the database
                     response.forEach((doc) => {
                         const posts = doc.data();
@@ -56,6 +60,41 @@ export default function Post(props) {
                     console.log(error);
 
                 });
+
+            // fetch(new Request("http://192.168.100.3:3000/api/postLen", {
+            //     method: "GET",
+            //     headers: {
+            //         Accept: 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            // }))
+            //     .then(response => {
+            //         let res = (JSON.stringify(response))
+            //         setTotalPost(res.lenght);
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //     });
+
+            // fetch(new Request("http://192.168.100.3:3000/api/post/:limitPost", {
+            //     method: "GET",
+            //     headers: {
+            //         Accept: 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            //     params: JSON.stringify({
+            //         limitPost: limitPost
+            //     })
+            // }))
+            //     .then(response => {
+            //         let res = (JSON.stringify(response))
+            //         console.log(JSON.stringify(response))
+            //         setStartPost(res.startPost)
+            //         setPost(res.posts);
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //     });
         }, [])
     );
 
@@ -85,6 +124,27 @@ export default function Post(props) {
                 setPost([...post, ...resultPost]);
             })
     }
+    // const handleLoadMore = () => {
+    //     post.length < totalPost && setIsLoading(true);
+
+    //     fetch(new Request("http://192.168.100.3:3000/api/post/:limitPost", {
+    //         method: "GET",
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         params: JSON.stringify({
+    //             limitPost: limitPost
+    //         })
+    //     }))
+    //         .then(response => {
+    //             let res = (JSON.stringify(response))
+    //             setPost([...post, ...res.posts]);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }
 
 
     const addPost = () => {
@@ -95,8 +155,8 @@ export default function Post(props) {
         <View style={styles.container}>
             <StatusBar
                 animated={true}
-                backgroundColor="#fff"
-                style={"auto"}
+                backgroundColor="#000"
+                style={"light"}
                 hidden={false} />
             <Title
                 text="Tablero de reportes"
@@ -111,7 +171,7 @@ export default function Post(props) {
                 reverse
                 type="material-community"
                 name="plus"
-                color="#192637"
+                color='#F7B948'
                 containerStyle={styles.btnContainer}
                 onPress={addPost}
             />
@@ -125,7 +185,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 40,
-        backgroundColor: "#fff"
+        backgroundColor: "#202020"
     },
     btnContainer: {
         position: "absolute",

@@ -44,7 +44,7 @@ export default function AddComment(props) {
                     )
                     setIsLoading(false);
                 })
-            //navigation.navigate("post")
+            //navigation.navigate("postInfo", idPost)
         }
 
     }
@@ -53,8 +53,8 @@ export default function AddComment(props) {
         <View style={styles.container}>
             <StatusBar
                 animated={true}
-                backgroundColor="#fff"
-                style={"auto"}
+                backgroundColor="#000"
+                style={"light"}
                 hidden={false} />
             <Title
                 text="Añade tu comentario"
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 40,
-        backgroundColor: "#fff"
+        backgroundColor: "#202020"
 
     },
     containerInput: {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
         opacity: 0.7,
         backfaceVisibility: "hidden",
         //backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        backgroundColor: "#F4CCB5",
+        backgroundColor: "#F7B948",
         borderRadius: 10,
         alignSelf: "center",
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     btnStyle: {
         width: "55%",
         height: 60,
-        backgroundColor: "#FED0CE",
+        backgroundColor: "#F7B948",
         borderRadius: 10,
     },
     btnTitleStyle: {

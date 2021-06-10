@@ -1,9 +1,12 @@
+//Importaciones
 import React from 'react'
 import { StyleSheet, View, Dimensions } from 'react-native'
 import { Image } from "react-native-elements";
 
+//Obtención del ancho de la pantalla del dispositivo
 const widthScreen = Dimensions.get("window").width;
 
+//Componente que muestra las imágenes cargadas
 export default function ShowImage(props) {
     const { mainImage } = props;
 
@@ -19,7 +22,7 @@ export default function ShowImage(props) {
         </View>
     );
 }
-
+//Hoja de estilos
 const styles = StyleSheet.create({
     viewPhoto: {
         alignItems: "center",
